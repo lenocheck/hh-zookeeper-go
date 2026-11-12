@@ -1,0 +1,203 @@
+﻿**********************
+Начало записи сценария Windows PowerShell
+Время начала: 20261031181718
+Имя пользователя: DESKTOP-FR52ED9\Honor
+Запуск от имени пользователя: DESKTOP-FR52ED9\Honor
+Имя конфигурации: 
+Компьютер: DESKTOP-FR52ED9 (Microsoft Windows NT 10.0.26300.0)
+Ведущее приложение: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+ИД процесса: 30688
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Транскрибирование запущено, выходной файл logs\transcript_stage2.txt
+PS C:\hh-work\hw4>
+(.venv) python zk\make_cfg.py
+
+PS C:\hh-work\hw4>
+(.venv) python zk\make_cfg.py
+
+PS C:\hh-work\hw4>
+(.venv) docker compose -f zk\compose.yaml up -d
+
+PS C:\hh-work\hw4>
+(.venv) docker ps
+
+PS C:\hh-work\hw4>
+(.venv) docker exec zk1 java -version
+
+PS C:\hh-work\hw4>
+(.venv) foreach ($z in "zk1","zk2","zk3") { " $z"; docker exec $z cat /data/myid }
+ zk1
+
+ zk2
+
+ zk3
+
+PS C:\hh-work\hw4>
+(.venv) docker exec zk1 cat /conf/zoo.cfg
+
+PS C:\hh-work\hw4>
+(.venv) docker exec zk2 cat /conf/zoo.cfg
+
+PS C:\hh-work\hw4>
+(.venv) docker exec zk3 cat /conf/zoo.cfg
+
+PS C:\hh-work\hw4>
+(.venv) foreach ($z in "zk1","zk2","zk3") { " $z"; docker exec $z zkServer.sh status }
+ zk1
+
+ zk2
+
+ zk3
+
+PS C:\hh-work\hw4>
+(.venv) foreach ($z in "zk1","zk2","zk3") { " $z"; docker logs $z 2>&1 | Select-String "LEADING|FOLLOWING|LOOKING" | Select-Object -Last 3 }
+ zk1
+
+2026-10-31 15:20:56,690 [myid:] - INFO  [QuorumPeer[myid=1](plain=[0:0:0:0:0:0:0:0]:21
+81)(secure=disabled):o.a.z.s.q.QuorumPeer@925] - Peer state changed: following - synch
+ronization - diff
+2026-10-31 15:20:56,697 [myid:] - INFO  [QuorumPeer[myid=1](plain=[0:0:0:0:0:0:0:0]:21
+81)(secure=disabled):o.a.z.s.q.QuorumPeer@925] - Peer state changed: following - synch
+ronization
+2026-10-31 15:20:56,742 [myid:] - INFO  [QuorumPeer[myid=1](plain=[0:0:0:0:0:0:0:0]:21
+81)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: following - broad
+cast
+ zk2
+2026-10-31 15:20:56,690 [myid:] - INFO  [QuorumPeer[myid=2](plain=[0:0:0:0:0:0:0:0]:21
+82)(secure=disabled):o.a.z.s.q.QuorumPeer@925] - Peer state changed: following - synch
+ronization - diff
+2026-10-31 15:20:56,697 [myid:] - INFO  [QuorumPeer[myid=2](plain=[0:0:0:0:0:0:0:0]:21
+82)(secure=disabled):o.a.z.s.q.QuorumPeer@925] - Peer state changed: following - synch
+ronization
+2026-10-31 15:20:56,741 [myid:] - INFO  [QuorumPeer[myid=2](plain=[0:0:0:0:0:0:0:0]:21
+82)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: following - broad
+cast
+ zk3
+2026-10-31 15:20:56,666 [myid:] - INFO  [QuorumPeer[myid=3](plain=[0:0:0:0:0:0:0:0]:21
+83)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: leading - discove
+ry
+2026-10-31 15:20:56,690 [myid:] - INFO  [QuorumPeer[myid=3](plain=[0:0:0:0:0:0:0:0]:21
+83)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: leading - synchro
+nization
+2026-10-31 15:20:56,721 [myid:] - INFO  [QuorumPeer[myid=3](plain=[0:0:0:0:0:0:0:0]:21
+83)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: leading - broadca
+st
+
+
+PS C:\hh-work\hw4>
+(.venv) docker exec zk1 zkCli.sh -server zk1:2181,zk2:2182,zk3:2183 create /probe ok
+
+PS C:\hh-work\hw4>
+(.venv) docker exec zk1 zkCli.sh -server zk1:2181,zk2:2182,zk3:2183 get /probe
+
+PS C:\hh-work\hw4>
+(.venv) python -m py_compile src\zk_common.py src\coordinator.py src\pause_proc.py src\zk_reset.py src\check_result.py
+
+PS C:\hh-work\hw4>
+(.venv) function zkc { docker exec $args[0] zkCli.sh -server $args[1] $args[2..($args.Count-1)] 2>&1 | Select-String -NotMatch "^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d,\d+ .*INFO|^WATCHER|^WatchedEvent|^\s*$" }
+PS C:\hh-work\hw4>
+(.venv) docker exec zk1 printenv JAVA_HOME
+
+PS C:\hh-work\hw4>
+(.venv) docker exec zk3 cat /conf/zoo.cfg
+
+PS C:\hh-work\hw4>
+(.venv) zkc zk1 "zk1:2181,zk2:2182,zk3:2183" get /probe
+
+Connecting to zk1:2181,zk2:2182,zk3:2183
+ok
+
+
+PS C:\hh-work\hw4>
+(.venv) docker stop zk3
+
+PS C:\hh-work\hw4>
+PS C:\hh-work\hw4>
+(.venv) Start-Sleep 10
+PS C:\hh-work\hw4>
+(.venv) foreach ($z in "zk1","zk2") { " $z"; docker exec $z zkServer.sh status }
+ zk1
+
+ zk2
+
+PS C:\hh-work\hw4>
+(.venv) zkc zk1 "zk1:2181" get /probe
+
+Connecting to zk1:2181
+ok
+
+
+PS C:\hh-work\hw4>
+(.venv) zkc zk1 "zk1:2181" create /after-one-down ok
+
+Connecting to zk1:2181
+Created /after-one-down
+
+
+PS C:\hh-work\hw4>
+(.venv) docker stop zk2
+
+PS C:\hh-work\hw4>
+(.venv) Start-Sleep 5
+PS C:\hh-work\hw4>
+(.venv) docker exec zk1 zkServer.sh status
+
+PS C:\hh-work\hw4>
+(.venv) zkc zk1 "zk1:2181" ls /
+
+Connecting to zk1:2181
+2026-10-31 15:43:56,632 [myid:zk1:2181] - WARN  [main-SendThread(zk1:2181):o.a.z.Clien
+tCnxn$SendThread@1301] - Session 0x0 for server zk1/172.24.0.4:2181, Closing socket co
+nnection. Attempting reconnect except it is a SessionExpiredException or SessionTimeou
+tException.
+org.apache.zookeeper.ClientCnxn$EndOfStreamException: Unable to read additional data f
+rom server sessionid 0x0, likely server has closed socket
+	at org.apache.zookeeper.ClientCnxnSocketNIO.doIO(ClientCnxnSocketNIO.java:77)
+	at org.apache.zookeeper.ClientCnxnSocketNIO.doTransport(ClientCnxnSocketNIO.java:356)
+	at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1290)
+KeeperErrorCode = ConnectionLoss for /
+2026-10-31 15:43:56,749 [myid:] - ERROR [main:o.a.z.u.ServiceUtils@48] - Exiting JVM w
+ith code 1
+
+
+PS C:\hh-work\hw4>
+(.venv) docker start zk3 zk2
+
+PS C:\hh-work\hw4>
+(.venv) Start-Sleep 20
+PS C:\hh-work\hw4>
+(.venv) foreach ($z in "zk1","zk2","zk3") { " $z"; docker exec $z zkServer.sh status }
+ zk1
+
+ zk2
+
+ zk3
+
+PS C:\hh-work\hw4>
+(.venv) zkc zk1 "zk1:2181,zk2:2182,zk3:2183" ls /
+
+Connecting to zk1:2181,zk2:2182,zk3:2183
+[after-one-down, probe, zookeeper]
+
+
+PS C:\hh-work\hw4>
+(.venv) zkc zk1 "zk1:2181,zk2:2182,zk3:2183" get /probe
+
+Connecting to zk1:2181,zk2:2182,zk3:2183
+ok
+
+
+PS C:\hh-work\hw4>
+(.venv) Stop-Transcript
+**********************
+Конец записи протокола Windows PowerShell
+Время окончания: 20261031185844
+**********************

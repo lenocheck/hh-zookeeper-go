@@ -1,0 +1,54 @@
+﻿**********************
+Начало записи сценария Windows PowerShell
+Время начала: 20261102210941
+Имя пользователя: DESKTOP-FR52ED9\Honor
+Запуск от имени пользователя: DESKTOP-FR52ED9\Honor
+Имя конфигурации: 
+Компьютер: DESKTOP-FR52ED9 (Microsoft Windows NT 10.0.26300.0)
+Ведущее приложение: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+ИД процесса: 12924
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Транскрибирование запущено, выходной файл logs\transcript_stage4.txt
+PS C:\hh-work\hw4>
+(.venv) python -X utf8 src\zk_reset.py --tag fence
+
+PS C:\hh-work\hw4>
+(.venv) python -X utf8 src\pause_proc.py --tag fence --name A --at-chunk 34 --seconds 40
+
+PS C:\hh-work\hw4>
+(.venv) python -X utf8 src\check_result.py --tag fence
+
+PS C:\hh-work\hw4>
+(.venv) zkc zk1 "zk1:2181" get -s /hh/result_pointer
+
+Connecting to zk1:2181
+{"owner": "B", "epoch": 2, "key": "results/zk/fence/n2_epoch2.tsv", "sha256": "e7d60b9
+13e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2", "chunks": 51, "records": 2
+29388, "go_vacancies": 2556, "unique_keys": 7075, "occurrences": 40614}
+cZxid = 0x400000041
+ctime = Mon Nov 02 18:09:46 UTC 2026
+mZxid = 0x400000050
+mtime = Mon Nov 02 18:11:26 UTC 2026
+pZxid = 0x400000041
+cversion = 0
+dataVersion = 1
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 243
+numChildren = 0
+
+
+PS C:\hh-work\hw4>
+(.venv) Stop-Transcript
+**********************
+Конец записи протокола Windows PowerShell
+Время окончания: 20261102211222
+**********************
