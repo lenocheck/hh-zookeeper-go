@@ -1,0 +1,34 @@
+(.venv) PS C:\hh-work\hw4> python -X utf8 src\check_result.py --tag fence
+ДЗ 3 (s3://hh-lake/results/mr/n2.tsv)
+ключей 7075, вхождений 40614, sha256 e7d60b913e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2
+
+Результаты прогона fence в S3 (results/zk/fence/)
+results/zk/fence/n2_epoch2.tsv: 208462 байт, sha256 e7d60b913e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2, совпадает с ДЗ 3
+файлов результата: 1
+
+ZooKeeper
+/hh/result_pointer: dataVersion=1, данные: {"owner": "B", "epoch": 2, "key": "results/zk/fence/n2_epoch2.tsv", "sha256": "e7d60b913e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2", "chunks": 51, "records": 229388, "go_vacancies": 2556, "unique_keys": 7075, "occurrences": 40614}
+/hh/epoch: dataVersion=2
+
+Журналы
+A: строк «записан результат»: 0, строк с BadVersionError: 1
+B: строк «записан результат»: 1, строк с BadVersionError: 0
+
+Время смены лидера: 10.6 с (лидер приостановлен 2026-11-02 21:10:56.061, B стал лидером 2026-11-02 21:11:06.688)
+B опубликовал результат 2026-11-02 21:11:26.784, A возобновлён 2026-11-02 21:11:36.080: B закончил до возобновления A
+B: восстановлен чекпоинт (записан A, эпоха 1): продолжение с чанка 33, записей 151072
+(.venv) PS C:\hh-work\hw4> zkc zk1 "zk1:2181" get -s /hh/result_pointer
+
+Connecting to zk1:2181
+{"owner": "B", "epoch": 2, "key": "results/zk/fence/n2_epoch2.tsv", "sha256": "e7d60b913e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2", "chunks": 51, "records": 229388, "go_vacancies": 2556, "unique_keys": 7075, "occurrences": 40614}
+cZxid = 0x400000041
+ctime = Mon Nov 02 18:09:46 UTC 2026
+mZxid = 0x400000050
+mtime = Mon Nov 02 18:11:26 UTC 2026
+pZxid = 0x400000041
+cversion = 0
+dataVersion = 1
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 243
+numChildren = 0

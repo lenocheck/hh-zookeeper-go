@@ -1,0 +1,188 @@
+PS C:\hh-work\hw4> python zk\make_cfg.py
+записано C:\hh-work\hw4\zk\zk1\zoo.cfg
+записано C:\hh-work\hw4\zk\zk2\zoo.cfg
+записано C:\hh-work\hw4\zk\zk3\zoo.cfg
+PS C:\hh-work\hw4> docker compose -f zk\compose.yaml up -d
+[+] up 23/23
+ ✔ Image zookeeper:3.9.6   Pulled    17.8s
+ ✔ Network hh-zk_default   Created   0.1s
+ ✔ Volume hh-zk_zk3-data   Created   0.0s
+ ✔ Volume hh-zk_zk3-datalog Created  0.0s
+ ✔ Volume hh-zk_zk1-data   Created   0.0s
+ ✔ Volume hh-zk_zk1-datalog Created  0.0s
+ ✔ Volume hh-zk_zk2-data   Created   0.0s
+ ✔ Volume hh-zk_zk2-datalog Created  0.0s
+ ✔ Container zk1           Started   1.1s
+ ✔ Container zk2           Started   1.0s
+ ✔ Container zk3           Started   1.0s
+PS C:\hh-work\hw4> docker ps
+CONTAINER ID   IMAGE                 COMMAND                  CREATED         STATUS              PORTS                                                                                      NAMES
+81fe39332edb   zookeeper:3.9.6       "/docker-entrypoint.…"   8 seconds ago   Up 7 seconds        0.0.0.0:2183->2183/tcp, [::]:2183->2183/tcp                                                zk3
+966ff869269a   zookeeper:3.9.6       "/docker-entrypoint.…"   8 seconds ago   Up 7 seconds        0.0.0.0:2182->2182/tcp, [::]:2182->2182/tcp                                                zk2
+7b22087a6580   zookeeper:3.9.6       "/docker-entrypoint.…"   8 seconds ago   Up 7 seconds        0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp                                                zk1
+cc00c51a1245   rustfs/rustfs:1.0.0   "/entrypoint.sh rust…"   4 weeks ago     Up About an hour    0.0.0.0:9010->9000/tcp, [::]:9010->9000/tcp, 0.0.0.0:9011->9001/tcp, [::]:9011->9001/tcp   hh-rustfs-home
+PS C:\hh-work\hw4> docker exec zk1 java -version
+openjdk version "17.0.20.1" 2026-08-18
+OpenJDK Runtime Environment Temurin-17.0.20.1+1 (build 17.0.20.1+1)
+OpenJDK 64-Bit Server VM Temurin-17.0.20.1+1 (build 17.0.20.1+1, mixed mode, sharing)
+PS C:\hh-work\hw4> docker exec zk1 printenv JAVA_HOME
+/opt/java/openjdk
+PS C:\hh-work\hw4> foreach ($z in "zk1","zk2","zk3") { " $z"; docker exec $z cat /data/myid }
+ zk1
+1
+ zk2
+2
+ zk3
+3
+PS C:\hh-work\hw4> docker exec zk1 cat /conf/zoo.cfg
+# server.N: N совпадает с номером в файле myid этого сервера
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/data
+dataLogDir=/datalog
+clientPort=2181
+admin.enableServer=false
+quorumListenOnAllIPs=true
+4lw.commands.whitelist=srvr,stat,ruok,mntr,conf
+server.1=zk1:2888:3888
+server.2=zk2:2889:3889
+server.3=zk3:2890:3890
+PS C:\hh-work\hw4> docker exec zk2 cat /conf/zoo.cfg
+# server.N: N совпадает с номером в файле myid этого сервера
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/data
+dataLogDir=/datalog
+clientPort=2182
+admin.enableServer=false
+quorumListenOnAllIPs=true
+4lw.commands.whitelist=srvr,stat,ruok,mntr,conf
+server.1=zk1:2888:3888
+server.2=zk2:2889:3889
+server.3=zk3:2890:3890
+PS C:\hh-work\hw4> docker exec zk3 cat /conf/zoo.cfg
+# server.N: N совпадает с номером в файле myid этого сервера
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/data
+dataLogDir=/datalog
+clientPort=2183
+admin.enableServer=false
+quorumListenOnAllIPs=true
+4lw.commands.whitelist=srvr,stat,ruok,mntr,conf
+server.1=zk1:2888:3888
+server.2=zk2:2889:3889
+server.3=zk3:2890:3890
+PS C:\hh-work\hw4> foreach ($z in "zk1","zk2","zk3") { " $z"; docker exec $z zkServer.sh status }
+ zk1
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Client port found: 2181. Client address: localhost. Client SSL: false.
+Mode: follower
+ zk2
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Client port found: 2182. Client address: localhost. Client SSL: false.
+Mode: follower
+ zk3
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Client port found: 2183. Client address: localhost. Client SSL: false.
+Mode: leader
+PS C:\hh-work\hw4> foreach ($z in "zk1","zk2","zk3") { " $z"; docker logs $z 2>&1 | Select-String "LEADING|FOLLOWING|LOOKING" | Select-Object -Last 3 }
+ zk1
+
+2026-10-31 15:20:56,690 [myid:] - INFO  [QuorumPeer[myid=1](plain=[0:0:0:0:0:0:0:0]:2181)(secure=disabled):o.a.z.s.q.QuorumPeer@925] - Peer state changed: following - synchronization - diff
+2026-10-31 15:20:56,697 [myid:] - INFO  [QuorumPeer[myid=1](plain=[0:0:0:0:0:0:0:0]:2181)(secure=disabled):o.a.z.s.q.QuorumPeer@925] - Peer state changed: following - synchronization
+2026-10-31 15:20:56,742 [myid:] - INFO  [QuorumPeer[myid=1](plain=[0:0:0:0:0:0:0:0]:2181)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: following - broadcast
+ zk2
+2026-10-31 15:20:56,690 [myid:] - INFO  [QuorumPeer[myid=2](plain=[0:0:0:0:0:0:0:0]:2182)(secure=disabled):o.a.z.s.q.QuorumPeer@925] - Peer state changed: following - synchronization - diff
+2026-10-31 15:20:56,697 [myid:] - INFO  [QuorumPeer[myid=2](plain=[0:0:0:0:0:0:0:0]:2182)(secure=disabled):o.a.z.s.q.QuorumPeer@925] - Peer state changed: following - synchronization
+2026-10-31 15:20:56,741 [myid:] - INFO  [QuorumPeer[myid=2](plain=[0:0:0:0:0:0:0:0]:2182)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: following - broadcast
+ zk3
+2026-10-31 15:20:56,666 [myid:] - INFO  [QuorumPeer[myid=3](plain=[0:0:0:0:0:0:0:0]:2183)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: leading - discovery
+2026-10-31 15:20:56,690 [myid:] - INFO  [QuorumPeer[myid=3](plain=[0:0:0:0:0:0:0:0]:2183)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: leading - synchronization
+2026-10-31 15:20:56,721 [myid:] - INFO  [QuorumPeer[myid=3](plain=[0:0:0:0:0:0:0:0]:2183)(secure=disabled):o.a.z.s.q.QuorumPeer@920] - Peer state changed: leading - broadcast
+PS C:\hh-work\hw4> docker exec zk1 zkCli.sh -server zk1:2181,zk2:2182,zk3:2183 create /probe ok
+Connecting to zk1:2181,zk2:2182,zk3:2183
+Created /probe
+PS C:\hh-work\hw4> zkc zk1 "zk1:2181,zk2:2182,zk3:2183" get /probe
+
+Connecting to zk1:2181,zk2:2182,zk3:2183
+ok
+
+PS C:\hh-work\hw4> docker stop zk3
+zk3
+PS C:\hh-work\hw4> Start-Sleep 10
+PS C:\hh-work\hw4> foreach ($z in "zk1","zk2") { " $z"; docker exec $z zkServer.sh status }
+ zk1
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Client port found: 2181. Client address: localhost. Client SSL: false.
+Mode: follower
+ zk2
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Client port found: 2182. Client address: localhost. Client SSL: false.
+Mode: leader
+PS C:\hh-work\hw4> zkc zk1 "zk1:2181" get /probe
+
+Connecting to zk1:2181
+ok
+
+PS C:\hh-work\hw4> zkc zk1 "zk1:2181" create /after-one-down ok
+
+Connecting to zk1:2181
+Created /after-one-down
+
+PS C:\hh-work\hw4> docker stop zk2
+zk2
+PS C:\hh-work\hw4> Start-Sleep 5
+PS C:\hh-work\hw4> docker exec zk1 zkServer.sh status
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Client port found: 2181. Client address: localhost. Client SSL: false.
+Error contacting service. It is probably not running.
+PS C:\hh-work\hw4> zkc zk1 "zk1:2181" ls /
+
+Connecting to zk1:2181
+2026-10-31 15:43:56,632 [myid:zk1:2181] - WARN  [main-SendThread(zk1:2181):o.a.z.ClientCnxn$SendThread@1301] - Session 0x0 for server zk1/172.24.0.4:2181, Closing socket connection. Attempting reconnect except it is a SessionExpiredException or SessionTimeoutException.
+org.apache.zookeeper.ClientCnxn$EndOfStreamException: Unable to read additional data from server sessionid 0x0, likely server has closed socket
+	at org.apache.zookeeper.ClientCnxnSocketNIO.doIO(ClientCnxnSocketNIO.java:77)
+	at org.apache.zookeeper.ClientCnxnSocketNIO.doTransport(ClientCnxnSocketNIO.java:356)
+	at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1290)
+KeeperErrorCode = ConnectionLoss for /
+2026-10-31 15:43:56,749 [myid:] - ERROR [main:o.a.z.u.ServiceUtils@48] - Exiting JVM with code 1
+
+PS C:\hh-work\hw4> docker start zk3 zk2
+zk3
+zk2
+PS C:\hh-work\hw4> Start-Sleep 20
+PS C:\hh-work\hw4> foreach ($z in "zk1","zk2","zk3") { " $z"; docker exec $z zkServer.sh status }
+ zk1
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Client port found: 2181. Client address: localhost. Client SSL: false.
+Mode: follower
+ zk2
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Client port found: 2182. Client address: localhost. Client SSL: false.
+Mode: leader
+ zk3
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Client port found: 2183. Client address: localhost. Client SSL: false.
+Mode: follower
+PS C:\hh-work\hw4> zkc zk1 "zk1:2181,zk2:2182,zk3:2183" ls /
+
+Connecting to zk1:2181,zk2:2182,zk3:2183
+[after-one-down, probe, zookeeper]
+
+PS C:\hh-work\hw4> zkc zk1 "zk1:2181,zk2:2182,zk3:2183" get /probe
+
+Connecting to zk1:2181,zk2:2182,zk3:2183
+ok

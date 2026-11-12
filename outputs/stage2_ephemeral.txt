@@ -1,0 +1,69 @@
+PS C:\hh-work\hw4> docker exec -it zk1 zkCli.sh -server zk1:2181
+Connecting to zk1:2181
+2026-10-31 15:49:51,942 [myid:] - INFO  [main:o.a.z.ZooKeeper@635] - Initiating client connection, connectString=zk1:2181 sessionTimeout=30000 watcher=org.apache.zookeeper.ZooKeeperMain$MyWatcher@2b546384
+2026-10-31 15:49:51,954 [myid:] - INFO  [main:o.a.z.c.X509Util@84] - Setting -D jdk.tls.rejectClientInitiatedRenegotiation=true to disable client-initiated TLS renegotiation
+2026-10-31 15:49:51,961 [myid:] - INFO  [main:o.a.z.ClientCnxnSocket@235] - jute.maxbuffer value is 1048575 Bytes
+2026-10-31 15:49:51,974 [myid:] - INFO  [main:o.a.z.ClientCnxn@1734] - zookeeper.request.timeout value is 0. feature enabled=false
+Welcome to ZooKeeper!
+JLine support is enabled
+2026-10-31 15:49:51,979 [myid:zk1:2181] - INFO  [main-SendThread(zk1:2181):o.a.z.ClientCnxn$SendThread@1170] - Opening socket connection to server zk1/172.24.0.4:2181.
+2026-10-31 15:49:51,980 [myid:zk1:2181] - INFO  [main-SendThread(zk1:2181):o.a.z.ClientCnxn$SendThread@1172] - SASL config status: Will not attempt to authenticate using SASL (unknown error)
+2026-10-31 15:49:51,994 [myid:zk1:2181] - INFO  [main-SendThread(zk1:2181):o.a.z.ClientCnxn$SendThread@1006] - Socket connection established, initiating session, client: /172.24.0.4:34630, server: zk1/172.24.0.4:2181
+2026-10-31 15:49:52,006 [myid:zk1:2181] - INFO  [main-SendThread(zk1:2181):o.a.z.ClientCnxn$SendThread@1438] - Session establishment complete on server zk1/172.24.0.4:2181, session id = 0x1000051e19f0001, negotiated timeout = 30000
+
+WATCHER::
+
+WatchedEvent state:SyncConnected type:None path:null zxid: -1
+[zk: zk1:2181(CONNECTED) 0] ls /
+[after-one-down, demo-ephemeral, probe, zookeeper]
+[zk: zk1:2181(CONNECTED) 1] stat /demo-ephemeral
+cZxid = 0x300000008
+ctime = Sat Oct 31 15:50:16 UTC 2026
+mZxid = 0x300000008
+mtime = Sat Oct 31 15:50:16 UTC 2026
+pZxid = 0x300000008
+cversion = 0
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x2000051e1660001
+dataLength = 5
+numChildren = 0
+[zk: zk1:2181(CONNECTED) 2] ls /
+[after-one-down, probe, zookeeper]
+[zk: zk1:2181(CONNECTED) 3] stat /demo-ephemeral
+Node does not exist: /demo-ephemeral
+[zk: zk1:2181(CONNECTED) 4] quit
+
+WATCHER::
+
+WatchedEvent state:Closed type:None path:null zxid: -1
+2026-10-31 15:54:04,545 [myid:] - INFO  [main-EventThread:o.a.z.ClientCnxn$EventThread@556] - EventThread shut down for session: 0x1000051e19f0001
+2026-10-31 15:54:04,546 [myid:] - INFO  [main:o.a.z.ZooKeeper@1230] - Session: 0x1000051e19f0001 closed
+2026-10-31 15:54:04,548 [myid:] - ERROR [main:o.a.z.u.ServiceUtils@48] - Exiting JVM with code 1
+
+PS C:\hh-work\hw4> docker exec -it zk2 zkCli.sh -server zk2:2182
+Connecting to zk2:2182
+2026-10-31 15:50:08,154 [myid:] - INFO  [main:o.a.z.ZooKeeper@635] - Initiating client connection, connectString=zk2:2182 sessionTimeout=30000 watcher=org.apache.zookeeper.ZooKeeperMain$MyWatcher@2b546384
+2026-10-31 15:50:08,162 [myid:] - INFO  [main:o.a.z.c.X509Util@84] - Setting -D jdk.tls.rejectClientInitiatedRenegotiation=true to disable client-initiated TLS renegotiation
+2026-10-31 15:50:08,168 [myid:] - INFO  [main:o.a.z.ClientCnxnSocket@235] - jute.maxbuffer value is 1048575 Bytes
+2026-10-31 15:50:08,174 [myid:] - INFO  [main:o.a.z.ClientCnxn@1734] - zookeeper.request.timeout value is 0. feature enabled=false
+Welcome to ZooKeeper!
+JLine support is enabled
+2026-10-31 15:50:08,180 [myid:zk2:2182] - INFO  [main-SendThread(zk2:2182):o.a.z.ClientCnxn$SendThread@1170] - Opening socket connection to server zk2/172.24.0.3:2182.
+2026-10-31 15:50:08,180 [myid:zk2:2182] - INFO  [main-SendThread(zk2:2182):o.a.z.ClientCnxn$SendThread@1172] - SASL config status: Will not attempt to authenticate using SASL (unknown error)
+2026-10-31 15:50:08,186 [myid:zk2:2182] - INFO  [main-SendThread(zk2:2182):o.a.z.ClientCnxn$SendThread@1006] - Socket connection established, initiating session, client: /172.24.0.3:43452, server: zk2/172.24.0.3:2182
+2026-10-31 15:50:08,194 [myid:zk2:2182] - INFO  [main-SendThread(zk2:2182):o.a.z.ClientCnxn$SendThread@1438] - Session establishment complete on server zk2/172.24.0.3:2182, session id = 0x2000051e1660001, negotiated timeout = 30000
+
+WATCHER::
+
+WatchedEvent state:SyncConnected type:None path:null zxid: -1
+[zk: zk2:2182(CONNECTED) 0] create -e /demo-ephemeral alive
+Created /demo-ephemeral
+[zk: zk2:2182(CONNECTED) 1] quit
+
+WATCHER::
+
+WatchedEvent state:Closed type:None path:null zxid: -1
+2026-10-31 15:52:02,075 [myid:] - INFO  [main-EventThread:o.a.z.ClientCnxn$EventThread@556] - EventThread shut down for session: 0x2000051e1660001
+2026-10-31 15:52:02,078 [myid:] - INFO  [main:o.a.z.ZooKeeper@1230] - Session: 0x2000051e1660001 closed
+2026-10-31 15:52:02,081 [myid:] - INFO  [main:o.a.z.u.ServiceUtils@45] - Exiting JVM with code 0

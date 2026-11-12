@@ -1,0 +1,35 @@
+(.venv) PS C:\hh-work\hw4> python -X utf8 src\check_result.py --tag nofence
+ДЗ 3 (s3://hh-lake/results/mr/n2.tsv)
+ключей 7075, вхождений 40614, sha256 e7d60b913e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2
+
+Результаты прогона nofence в S3 (results/zk/nofence/)
+results/zk/nofence/n2_epoch1.tsv: 208462 байт, sha256 e7d60b913e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2, совпадает с ДЗ 3
+results/zk/nofence/n2_epoch2.tsv: 208462 байт, sha256 e7d60b913e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2, совпадает с ДЗ 3
+файлов результата: 2
+
+ZooKeeper
+/hh/result_pointer: dataVersion=2, данные: {"owner": "A", "epoch": 1, "key": "results/zk/nofence/n2_epoch1.tsv", "sha256": "e7d60b913e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2", "chunks": 51, "records": 229388, "go_vacancies": 2556, "unique_keys": 7075, "occurrences": 40614}
+/hh/epoch: dataVersion=2
+
+Журналы
+A: строк «записан результат»: 1, строк с BadVersionError: 0
+B: строк «записан результат»: 1, строк с BadVersionError: 0
+
+Время смены лидера: 7.9 с (лидер приостановлен 2026-11-02 21:07:23.382, B стал лидером 2026-11-02 21:07:31.272)
+B опубликовал результат 2026-11-02 21:07:51.349, A возобновлён 2026-11-02 21:08:03.399: B закончил до возобновления A
+B: восстановлен чекпоинт (записан A, эпоха 1): продолжение с чанка 33, записей 151072
+(.venv) PS C:\hh-work\hw4> zkc zk1 "zk1:2181" get -s /hh/result_pointer
+
+Connecting to zk1:2181
+{"owner": "A", "epoch": 1, "key": "results/zk/nofence/n2_epoch1.tsv", "sha256": "e7d60b913e817e613b4bc99e10d4533e6e8fc26227c043ac31ea7d265a4e15c2", "chunks": 51, "records": 229388, "go_vacancies": 2556, "unique_keys": 7075, "occurrences": 40614}
+cZxid = 0x400000020
+ctime = Mon Nov 02 18:06:12 UTC 2026
+mZxid = 0x400000032
+mtime = Mon Nov 02 18:08:19 UTC 2026
+pZxid = 0x400000020
+cversion = 0
+dataVersion = 2
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 245
+numChildren = 0
